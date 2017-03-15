@@ -21,7 +21,7 @@ elif [ ${DISTRIBUTION} = 'centos' -o ${DISTRIBUTION} = 'fedora' ]; then
   debug 'Creating vagrant user...'
   chroot ${ROOTFS} useradd --create-home -s /bin/bash -u 1000 vagrant &>> ${LOG}
   echo -n 'vagrant:vagrant' | chroot ${ROOTFS} chpasswd
-  sed -i 's/^Defaults\s\+requiretty/# Defaults requiretty/' $ROOTFS/etc/sudoers
+  sed -i 's/^Defaults\s\+requiretty/Defaults !requiretty/' $ROOTFS/etc/sudoers
   if [ ${RELEASE} -eq 6 ]; then
     info 'Disabling password aging for root...'
     # disable password aging (required on Centos 6)
@@ -30,9 +30,9 @@ elif [ ${DISTRIBUTION} = 'centos' -o ${DISTRIBUTION} = 'fedora' ]; then
   fi
 else
   debug 'Creating vagrant user...'
-  chroot ${ROOTFS} useradd --create-home -s /bin/bash vagrant &>> ${LOG}
-  chroot ${ROOTFS} adduser vagrant sudo &>> ${LOG}
-  echo -n 'vagrant:vagrant' | chroot ${ROOTFS} chpasswd
+  chroot ${ROOTFS} /usr/sbin/useradd --create-home -s /bin/bash vagrant &>> ${LOG}
+  chroot ${ROOTFS} /usr/sbin/adduser vagrant sudo &>> ${LOG}
+  echo -n 'vagrant:vagrant' | chroot ${ROOTFS} /usr/sbin/chpasswd
 fi
 
 # Configure SSH access
@@ -42,7 +42,7 @@ else
   debug 'SSH key has not been set'
   mkdir -p ${ROOTFS}/home/vagrant/.ssh
   echo $VAGRANT_KEY > ${ROOTFS}/home/vagrant/.ssh/authorized_keys
-  chroot ${ROOTFS} chown -R vagrant: /home/vagrant/.ssh
+  chroot ${ROOTFS} /bin/chown -R vagrant: /home/vagrant/.ssh
   log 'SSH credentials configured for the vagrant user.'
 fi
 

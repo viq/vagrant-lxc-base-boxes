@@ -3,7 +3,7 @@
 utils.lxc.attach() {
   cmd="$@"
   log "Running [${cmd}] inside '${CONTAINER}' container..."
-  (lxc-attach -n ${CONTAINER} -- $cmd) &>> ${LOG}
+  (lxc-attach -n ${CONTAINER} --clear-env -- $cmd) &>> ${LOG}
 }
 
 utils.lxc.start() {
@@ -19,5 +19,5 @@ utils.lxc.destroy() {
 }
 
 utils.lxc.create() {
-  lxc-create -n ${CONTAINER} "$@" &>> ${LOG}
+  lxc-create -n ${CONTAINER} -l DEBUG "$@" &>> ${LOG}
 }

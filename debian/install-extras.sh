@@ -15,7 +15,7 @@ log "Sleeping for $SECS seconds..."
 sleep $SECS
 
 # TODO: Support for appending to this list from outside
-PACKAGES=(vim curl wget man-db openssh-server bash-completion python-software-properties ca-certificates sudo)
+PACKAGES=(vim curl wget man-db openssh-server bash-completion python-software-properties ca-certificates sudo less python-pip)
 if [ $DISTRIBUTION = 'ubuntu' ]; then
   PACKAGES+=' software-properties-common'
 fi
@@ -49,6 +49,9 @@ EOF
     chmod +x ${ROOTFS}/tmp/install-chef.sh
     utils.lxc.attach /tmp/install-chef.sh
   fi
+elif [ $CHEF = 2 ]; then
+    log "Faking Chef installation"
+    utils.lxc.attach mkdir -p /opt/chef
 else
   log "Skipping Chef installation"
 fi
