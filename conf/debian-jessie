@@ -1,6 +1,6 @@
 # support systemd as PID 1
 lxc.autodev = 1
-lxc.kmsg = 0
+#lxc.kmsg = 0
 
 # Default pivot location
 lxc.pivotdir = lxc_putold

@@ -15,7 +15,11 @@ log "Sleeping for $SECS seconds..."
 sleep $SECS
 
 # TODO: Support for appending to this list from outside
-PACKAGES=(vim curl wget man-db openssh-server bash-completion python-software-properties ca-certificates sudo less python-pip)
+if [ $RELEASE != 'stretch' ] ; then
+	PACKAGES=(vim curl wget man-db openssh-server bash-completion python-software-properties ca-certificates sudo less python-pip)
+else
+	PACKAGES=(vim curl wget man-db openssh-server bash-completion software-properties-common ca-certificates sudo less python-pip)
+fi
 if [ $DISTRIBUTION = 'ubuntu' ]; then
   PACKAGES+=' software-properties-common'
 fi
@@ -79,7 +83,9 @@ if [ $SALT = 1 ]; then
     warn "Salt can't be installed on Ubuntu Raring 13.04, skipping"
   else
     if [ $DISTRIBUTION = 'ubuntu' ]; then
-      utils.lxc.attach add-apt-repository -y ppa:saltstack/salt
+      #utils.lxc.attach add-apt-repository -y ppa:saltstack/salt
+      utils.lxc.attach curl -L https://bootstrap.saltstack.com -o /tmp/install_salt.sh
+      utils.lxc.attach sh /tmp/install_salt.sh -P -X -d -U
     else # DEBIAN
       if [ $RELEASE == "squeeze" ]; then
         SALT_SOURCE_1="deb http://debian.saltstack.com/debian squeeze-saltstack main"
